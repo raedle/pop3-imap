@@ -1,5 +1,10 @@
 FROM python:alpine
 
+ENV EF_IMAP_SERVER=EF_IMAP_SERVER \
+    EF_SSL_KEY=EF_SSL_KEY \
+    EF_SSL_CERT=EF_SSL_CERT
+
+# Run on port 995 -> supported by Google Mail
 EXPOSE 995
 
 # Install pipenv
@@ -16,5 +21,4 @@ WORKDIR /app
 RUN pipenv install --deploy --system
 
 # Run app
-CMD python -m aiopopd -b $HOSTNAME -H imap.au.dk -p 993 --imap-ssl -P 995 -n
-# CMD python -m aiopopd -H imap.au.dk -p 993 --imap-ssl -P 9955 -n --ssl-key key.pem --ssl-cert fullchain.pem --ssl-generate
+CMD python -m aiopopd -b $HOSTNAME -H ${EF_IMAP_SERVER} -p 993 --imap-ssl -P 995 -n --ssl-key ${EF_SSL_KEY} --ssl-cert ${EF_SSL_CERT}
